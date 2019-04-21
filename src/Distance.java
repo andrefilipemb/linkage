@@ -1,3 +1,4 @@
+import java.io.FileReader;
 import java.util.HashMap;
 import uk.ac.shef.wit.simmetrics.similaritymetrics.*;
 
@@ -10,6 +11,11 @@ public class Distance {
 
 		String arg1 = args[0];
 		String arg2 = args[1];
+		boolean normalized = false;
+
+		if (args.length > 2 && args[2].equals("normalize=false")) {
+			normalized = true;
+		}
 
 		HashMap<String, Object> algoritmos = new HashMap<String, Object>();
 
@@ -33,7 +39,13 @@ public class Distance {
 		for (String key : algoritmos.keySet()) {
 
 			AbstractStringMetric metric = (AbstractStringMetric) algoritmos.get(key);
-			float result = metric.getSimilarity(arg1, arg2);
+			float result = 0;
+			if (!normalized) {
+				result = metric.getSimilarity(arg1, arg2);
+			} else {
+				result = metric.getUnNormalisedSimilarity(arg1, arg2);
+			}
+
 			if (result > maior) {
 				maior = result;
 				key_maior = key;
